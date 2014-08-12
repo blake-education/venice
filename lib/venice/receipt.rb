@@ -83,17 +83,17 @@ module Venice
       end
 
       def verify!(data, options = {})
-        client = Client.production
+        client = options[:production_client] || Client.production
 
         begin
           client.verify!(data, options)
         rescue VerificationError => error
           case error.code
           when 21007
-            client = Client.development
+            client = options[:development_client] || Client.development
             retry
           when 21008
-            client = Client.production
+            client = options[:production_client] || Client.production
             retry
           else
             raise error

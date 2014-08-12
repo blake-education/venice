@@ -54,15 +54,11 @@ describe Venice::Receipt do
     its(:requested_at) { should be_instance_of DateTime }
 
     describe "#verify!" do
-
-      before do
-        Venice::Client.any_instance.stub(:json_response_from_verifying_data).and_return(response)
-      end
-
-      let(:receipt) { Venice::Receipt.verify("asdf") }
+      let(:client ) { allow(double).to receive(:json_response_from_verifying_data).and_return(response) }
+      let(:receipt) { Venice::Receipt.verify("asdf", production_client: client) }
 
       it "should create the receipt" do
-        receipt.should_not be_nil
+        expect(receipt).not_to be_nil
       end
     end
 
