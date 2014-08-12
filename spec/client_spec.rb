@@ -8,12 +8,12 @@ describe Venice::Client do
     context "no shared_secret" do
       before do
         client.shared_secret = nil
-        Venice::Receipt.stub :new
+        allow(Venice::Receipt).to receive(:new)
       end
 
       it "should only include the receipt_data" do
-        Net::HTTP.any_instance.should_receive(:request) do |post|
-          post.body.should eq({'receipt-data' => receipt_data}.to_json)
+        expect_any_instance_of(Net::HTTP).to receive(:request) do |post|
+          expect(post.body).to eql({'receipt-data' => receipt_data}.to_json)
           post
         end
         client.verify! receipt_data
@@ -25,12 +25,12 @@ describe Venice::Client do
 
       before do
         client.shared_secret = secret
-        Venice::Receipt.stub :new
+        allow(Venice::Receipt).to receive(:new)
       end
 
       it "should include the secret in the post" do
-        Net::HTTP.any_instance.should_receive(:request) do |post|
-          post.body.should eq({'receipt-data' => receipt_data, 'password' => secret}.to_json)
+        expect_any_instance_of(Net::HTTP).to receive(:request) do |post|
+          expect(post.body).to eql({'receipt-data' => receipt_data, 'password' => secret}.to_json)
           post
         end
         client.verify! receipt_data
@@ -39,7 +39,7 @@ describe Venice::Client do
 
     context "with a latest receipt info attribute" do
       before do
-        client.stub(:json_response_from_verifying_data).and_return(response)
+        allow(client).to receive(:json_response_from_verifying_data).and_return(response)
       end
 
       let(:response) do
@@ -72,7 +72,7 @@ describe Venice::Client do
 
       it "should create a latest receipt" do
         receipt = client.verify! 'asdf'
-        receipt.latest_receipt.should_not be_nil
+        expect(receipt.latest_receipt).not_to be_nil
       end
     end
 

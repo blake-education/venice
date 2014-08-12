@@ -37,9 +37,9 @@ describe Venice::InAppReceipt do
     its(:expires_at) { should be_instance_of Time }
 
     it "should parse the 'original' attributes" do
-      subject.original.should be_instance_of Venice::InAppReceipt
-      subject.original.transaction_id.should == "140xxx867509"
-      subject.original.purchased_at.should be_instance_of DateTime
+      expect(subject.original).to be_instance_of Venice::InAppReceipt
+      expect(subject.original.transaction_id).to eql("140xxx867509")
+      expect(subject.original.purchased_at).to be_instance_of DateTime
     end
 
 
